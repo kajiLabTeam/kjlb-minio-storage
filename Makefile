@@ -8,3 +8,6 @@ logs:
 
 down:
 	docker compose down
+
+go:
+	docker exec -it $(MINIO_CONTROL_CONTAINER_HOST) /bin/sh
