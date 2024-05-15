@@ -37,7 +37,7 @@ func Init() {
 	})
 
 	// サーバの起動とエラーハンドリング
-	if err := r.Run("0.0.0.0:8084"); err != nil {
+	if err := r.Run("0.0.0.0:8000"); err != nil {
 		fmt.Println("サーバの起動に失敗しました:", err)
 	}
 }
