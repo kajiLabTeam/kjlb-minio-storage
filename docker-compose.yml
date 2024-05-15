@@ -14,3 +14,16 @@ services:
     command: -c "/opt/bin/minio server /export --address :9000 --console-address :9001"
     volumes:
       - ./docker/sensor-storage/minio/data:/export
+
+  golang:
+    container_name: ${MINIO_CONTROL_CONTAINER_HOST}
+    hostname: ${MINIO_CONTROL_HOST}
+    tty: true
+    env_file: .env
+    build:
+      context: .
+      dockerfile: ./docker/go/Dockerfile
+    volumes:
+      - ./src:/go/src/app
+    ports:
+      - 8000:8000
