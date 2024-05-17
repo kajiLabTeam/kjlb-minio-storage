@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
 )
 
@@ -15,4 +16,15 @@ func GetBuckets() (*s3.ListBucketsOutput, error) {
 	}
 
 	return buckets, nil
+}
+
+func CreateBucket(bucketName string) error {
+	_, err := minioClient.CreateBucket(&s3.CreateBucketInput{
+		Bucket: aws.String(bucketName),
+	})
+	if err != nil {
+		fmt.Println("Unable to create bucket", err)
+		return err
+	}
+	return nil
 }

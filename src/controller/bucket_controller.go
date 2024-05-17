@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -20,7 +19,7 @@ func GetBuckets(c *gin.Context) {
 	if err != nil {
 		log.Fatalf("Unable to create session, %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": fmt.Sprintf("Unable to create session"),
+			"error": "Unable to create session",
 		})
 		return
 	}
@@ -36,4 +35,19 @@ func GetBuckets(c *gin.Context) {
 
 	// JSONレスポンスを返す
 	c.JSON(http.StatusOK, responseData)
+}
+
+func CreateBucket(c *gin.Context) {
+	bucketName := c.Query("name")
+
+	err := service.CreateBucket(bucketName)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err,
+		})
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{
+		"bucket": bucketName,
+	})
 }
