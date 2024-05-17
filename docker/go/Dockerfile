@@ -10,3 +10,5 @@ WORKDIR /go/src/app/
 
 # ホストPCの[./src]フォルダーを[/go/src/app/]フォルダーにコピー
 ADD ./src .
+
+CMD ["go", "run", "main.go"]
