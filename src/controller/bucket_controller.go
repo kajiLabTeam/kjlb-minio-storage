@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"log"
 	"net/http"
 
+	"github.com/NenfuAT/24AuthorizationServer/helper"
 	"github.com/NenfuAT/24AuthorizationServer/service"
 	"github.com/gin-gonic/gin"
 )
@@ -14,10 +14,22 @@ func GetBuckets(c *gin.Context) {
 	}
 	var bucketNames []string
 
+	authHeader := c.GetHeader("Authorization")
+	if authHeader == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing"})
+		return
+	}
+
+	err := helper.AuthBasic(authHeader)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 	// サービスからバケットのリストを取得
 	buckets, err := service.GetBuckets()
 	if err != nil {
-		log.Fatalf("Unable to create session, %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Unable to create session",
 		})
@@ -38,12 +50,25 @@ func GetBuckets(c *gin.Context) {
 }
 
 func CreateBucket(c *gin.Context) {
+	authHeader := c.GetHeader("Authorization")
+	if authHeader == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing"})
+		return
+	}
+
+	err := helper.AuthBasic(authHeader)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 	bucketName := c.Query("name")
 
-	err := service.CreateBucket(bucketName)
+	err = service.CreateBucket(bucketName)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}

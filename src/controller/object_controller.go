@@ -3,11 +3,25 @@ package controller
 import (
 	"net/http"
 
+	"github.com/NenfuAT/24AuthorizationServer/helper"
 	"github.com/NenfuAT/24AuthorizationServer/service"
 	"github.com/gin-gonic/gin"
 )
 
 func PostObject(c *gin.Context) {
+	authHeader := c.GetHeader("Authorization")
+	if authHeader == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing"})
+		return
+	}
+
+	err := helper.AuthBasic(authHeader)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 
 	bucketName := c.Request.FormValue("bucket")
 	if bucketName == "" {
@@ -56,6 +70,21 @@ func GetObjectUrl(c *gin.Context) {
 		Path   string `json:"path"`
 		File   string `json:"file"`
 	}
+
+	authHeader := c.GetHeader("Authorization")
+	if authHeader == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing"})
+		return
+	}
+
+	err := helper.AuthBasic(authHeader)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
 	var req Request
 	if err := c.Bind(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
