@@ -5,9 +5,8 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"time"
 
-	"github.com/gin-contrib/cors"
+	"github.com/NenfuAT/24AuthorizationServer/controller"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,20 +23,18 @@ func Init() {
 	gin.DefaultWriter = io.MultiWriter(logFile, os.Stdout) // ファイルとコンソールにログを出力
 
 	r := gin.Default()
-	// CORSミドルウェアの設定
-	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"},                   // 許可するオリジンを指定
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}, // 許可するHTTPメソッド
-		AllowHeaders:     []string{"Content-Type", "Authorization"},           // 許可するヘッダー
-		AllowCredentials: true,                                                // クレデンシャル付きリクエストを許可
-		MaxAge:           12 * time.Hour,                                      // プリフライトリクエストのキャッシュ期間
-	}))
 	r.GET("/hello", func(c *gin.Context) {
 		c.String(http.StatusOK, "Hello World!!")
 	})
 
+	r.GET("api/bucket/get", controller.GetBuckets)
+	r.POST("api/bucket/create", controller.CreateBucket)
+
+	r.POST("api/object/upload", controller.PostObject)
+	r.POST("api/object/get", controller.GetObjectUrl)
+
 	// サーバの起動とエラーハンドリング
-	if err := r.Run("0.0.0.0:8084"); err != nil {
+	if err := r.Run("0.0.0.0:8000"); err != nil {
 		fmt.Println("サーバの起動に失敗しました:", err)
 	}
 }
