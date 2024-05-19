@@ -2,6 +2,7 @@ package service
 
 import (
 	"bytes"
+	"fmt"
 	"mime/multipart"
 	"time"
 
@@ -32,8 +33,19 @@ func PostObject(bucketName string, path string, file multipart.File, fileName st
 	return nil
 }
 
-func GetObjectUrl(bucketName string, path string, fileName string) (string, error) {
-	key := path + fileName
+func GetObjects(bucketName string, prefix string) (*s3.ListObjectsV2Output, error) {
+	result, err := minioClient.ListObjectsV2(&s3.ListObjectsV2Input{
+		Bucket: aws.String(bucketName),
+		Prefix: aws.String(prefix),
+	})
+	if err != nil {
+		fmt.Println("Unable to list buckets", err)
+		return nil, err
+	}
+	return result, nil
+}
+
+func GetObjectUrl(bucketName string, key string) (string, error) {
 	req, _ := minioClient.GetObjectRequest(&s3.GetObjectInput{
 		Bucket: aws.String(bucketName),
 		Key:    aws.String(key),

@@ -27,11 +27,12 @@ func Init() {
 		c.String(http.StatusOK, "Hello World!!")
 	})
 
-	r.GET("api/bucket/get", controller.GetBuckets)
+	r.GET("api/bucket/list", controller.GetBuckets)
 	r.POST("api/bucket/create", controller.CreateBucket)
 
 	r.POST("api/object/upload", controller.PostObject)
 	r.POST("api/object/get", controller.GetObjectUrl)
+	r.POST("api/object/list", controller.GetObjects)
 
 	// サーバの起動とエラーハンドリング
 	if err := r.Run("0.0.0.0:8000"); err != nil {
