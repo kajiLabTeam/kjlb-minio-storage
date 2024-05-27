@@ -32,12 +32,6 @@ func PostObject(c *gin.Context) {
 	}
 
 	path := c.Request.FormValue("path")
-	if path == "" {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "path name is required",
-		})
-		return
-	}
 
 	// フォームからファイルを取得
 	file, header, err := c.Request.FormFile("file")
