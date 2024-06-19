@@ -1,6 +1,6 @@
-# sensor-minio-storage
+# kjlb-minio-storage
 
-梶研センサデータ等の格納用Minioサーバーです
+梶研MiniOサーバーです
 
 ログイン方法は[こちら](https://kjlb.esa.io/posts/5610)
 
